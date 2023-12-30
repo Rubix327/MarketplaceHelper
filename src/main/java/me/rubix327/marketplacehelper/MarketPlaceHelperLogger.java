@@ -1,7 +1,7 @@
 package me.rubix327.marketplacehelper;
 
 @SuppressWarnings("unused")
-public class MarketPlaceHelperCore {
+public class MarketPlaceHelperLogger {
 
     public static void logEmptyMessage(){
         logMessage("");

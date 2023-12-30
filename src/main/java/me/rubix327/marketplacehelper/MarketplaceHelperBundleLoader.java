@@ -12,6 +12,8 @@ import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
+import static me.rubix327.marketplacehelper.MarketPlaceHelperLogger.logErrorMessage;
+
 public class MarketplaceHelperBundleLoader {
 
     // TODO Calculated at runtime
@@ -27,20 +29,20 @@ public class MarketplaceHelperBundleLoader {
         if (!modulesFolder.exists()) {
             boolean created = modulesFolder.mkdir();
             if (!created) {
-                MarketPlaceHelperCore.logErrorMessage("Не удалось создать папку modules по пути " + modulesFolder + ".");
-                MarketPlaceHelperCore.logErrorMessage("Пожалуйста, создайте её вручную и перезапустите программу.");
+                logErrorMessage("Не удалось создать папку modules по пути " + modulesFolder + ".");
+                logErrorMessage("Пожалуйста, создайте её вручную и перезапустите программу.");
                 return;
             }
         }
 
         if (!modulesFolder.isDirectory()) {
-            MarketPlaceHelperCore.logErrorMessage("Не найдена папка modules по пути " + modulesFolder);
+            logErrorMessage("Не найдена папка modules по пути " + modulesFolder);
             return;
         }
 
         File[] innerFiles = modulesFolder.listFiles();
         if (innerFiles == null) {
-            MarketPlaceHelperCore.logErrorMessage("В папке modules не найдено ни одного модуля.");
+            logErrorMessage("В папке modules не найдено ни одного модуля.");
             return;
         }
 
@@ -69,11 +71,11 @@ public class MarketplaceHelperBundleLoader {
                 loadModule(foundJarFile, urlClassLoader);
             }
         } catch (IOException e) {
-            MarketPlaceHelperCore.logErrorMessage("Не удалось инициализировать загрузчик классов. Детали: " + e.getMessage());
+            logErrorMessage("Не удалось инициализировать загрузчик классов. Детали: " + e.getMessage());
             return;
         }
 
-        MarketPlaceHelperCore.logSuccessMessage("Загружены следующие модули:");
+        MarketPlaceHelperLogger.logSuccessMessage("Загружены следующие модули:");
         for (MarketPlaceBundle loadedBundle : loadedBundles) {
             System.out.println(loadedBundle.getName() + " - " + loadedBundle.getDescription());
         }
@@ -92,7 +94,7 @@ public class MarketplaceHelperBundleLoader {
 
     public static void loadModule(File file, ClassLoader loader){
         String moduleName = file.getName().replace(".jar", "");
-        MarketPlaceHelperCore.logAddMessage("Загружаем модуль " + moduleName + "...");
+        MarketPlaceHelperLogger.logAddMessage("Загружаем модуль " + moduleName + "...");
         String pkg;
         String main;
         try (JarFile jarFile = new JarFile(file)){
@@ -106,7 +108,7 @@ public class MarketplaceHelperBundleLoader {
             main = attr.getValue("Main-Class");
         }
         catch (IOException | SecurityException e){
-            MarketPlaceHelperCore.logErrorMessage("Не удалось открыть модуль " + moduleName + ". Детали: " + e.getMessage());
+            logErrorMessage("Не удалось открыть модуль " + moduleName + ". Детали: " + e.getMessage());
             return;
         }
 
@@ -121,11 +123,13 @@ public class MarketplaceHelperBundleLoader {
         }
 
         String mainClassName = pkg + "." + main;
-        MarketPlaceHelperCore.logInfoMessage("Main class name: " + mainClassName);
+        MarketPlaceHelperLogger.logInfoMessage("Main class name: " + mainClassName);
 
         try{
             Class<?> classToLoad = Class.forName(mainClassName, true, loader);
             MarketPlaceBundle instance = (MarketPlaceBundle) classToLoad.getDeclaredConstructor().newInstance();
+            // TODO remove in production
+            instance.init();
 //            Method method = classToLoad.getDeclaredMethod("init");
 //            method.invoke(instance);
 
