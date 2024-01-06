@@ -1,17 +1,35 @@
 package me.rubix327.marketplacehelper;
 
+import lombok.Getter;
+import lombok.NonNull;
 import me.rubix327.marketplacehelper.data.BundleResult;
 import me.rubix327.marketplacehelper.data.BundleSource;
 
 import java.util.Objects;
 
+@Getter
 @SuppressWarnings("unused")
 public abstract class MarketPlaceHelperBundle {
+
+    @NonNull
+    private MarketPlaceHelperLogger logger;
 
     public abstract String getName();
     public abstract String getDescription();
     public abstract String getVersion();
     public abstract BundleResult init(BundleSource source);
+
+    public MarketPlaceHelperBundle() {
+        this.logger = new MarketPlaceHelperLogger();
+    }
+
+    public MarketPlaceHelperBundle(MarketPlaceHelperLogger logger) {
+        this.logger = logger;
+    }
+
+    public void setLogger(@NonNull MarketPlaceHelperLogger logger) {
+        this.logger = logger;
+    }
 
     @Override
     public boolean equals(Object o) {
