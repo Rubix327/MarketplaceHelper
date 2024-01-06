@@ -17,7 +17,7 @@ public abstract class MarketPlaceHelperBundle {
     public abstract String getName();
     public abstract String getDescription();
     public abstract String getVersion();
-    public abstract BundleResult init(BundleSource source);
+    public abstract BundleResult execute(BundleSource source);
 
     public MarketPlaceHelperBundle() {
         this.logger = new MarketPlaceHelperLogger();
