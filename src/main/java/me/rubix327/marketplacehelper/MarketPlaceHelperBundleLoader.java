@@ -16,6 +16,7 @@ import java.util.jar.Manifest;
 public class MarketPlaceHelperBundleLoader {
 
     private final MarketPlaceHelperLogger logger;
+    private final List<URLClassLoader> classLoaders = new ArrayList<>();
 
     public MarketPlaceHelperBundleLoader() {
         this.logger = new MarketPlaceHelperLogger();
@@ -61,13 +62,11 @@ public class MarketPlaceHelperBundleLoader {
             if (url == null) continue;
 
             URL[] urlsArray = new URL[]{url};
-            try(URLClassLoader loader = new URLClassLoader(urlsArray, MarketPlaceHelperBundleLoader.class.getClassLoader())){
-                MarketPlaceHelperBundle bundle = loadModule(foundJarFile, loader);
-                if (bundle != null){
-                    bundles.add(bundle);
-                }
-            } catch (IOException e){
-                logger.logErrorMessage("Не удалось закрыть загрузчик классов. Детали: " + e.getMessage());
+            URLClassLoader loader = new URLClassLoader(urlsArray, MarketPlaceHelperBundleLoader.class.getClassLoader());
+            MarketPlaceHelperBundle bundle = loadModule(foundJarFile, loader);
+            if (bundle != null){
+                bundles.add(bundle);
+                classLoaders.add(loader);
             }
         }
 
@@ -112,6 +111,15 @@ public class MarketPlaceHelperBundleLoader {
             logger.logErrorMessage("Произошла ошибка при загрузке модуля " + moduleName + ": " + e.getClass().getName() + ": " + e.getMessage());
             return null;
         }
+    }
+
+    public void closeClassLoaders(){
+        for (URLClassLoader classLoader : classLoaders) {
+            try{
+                classLoader.close();
+            } catch (IOException ignored){}
+        }
+        logger.logDebugMessage("All Class Loaders are now closed.");
     }
 
 }
