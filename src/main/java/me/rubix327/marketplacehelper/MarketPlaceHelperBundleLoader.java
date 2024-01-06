@@ -55,23 +55,19 @@ public class MarketPlaceHelperBundleLoader {
             return new ArrayList<>();
         }
 
-        List<URL> urls = new ArrayList<>();
+        List<MarketPlaceHelperBundle> bundles = new ArrayList<>();
         for (File foundJarFile : foundJarFiles) {
             URL url = getUrlFromFile(foundJarFile);
             if (url == null) continue;
-            urls.add(url);
-        }
 
-        URL[] urlsArray = new URL[foundJarFiles.size()];
-        urls.toArray(urlsArray);
-
-        URLClassLoader loader = new URLClassLoader(urlsArray, MarketPlaceHelperBundleLoader.class.getClassLoader());
-
-        List<MarketPlaceHelperBundle> bundles = new ArrayList<>();
-        for (File foundJarFile : foundJarFiles) {
-            MarketPlaceHelperBundle bundle = loadModule(foundJarFile, loader);
-            if (bundle != null){
-                bundles.add(bundle);
+            URL[] urlsArray = new URL[]{url};
+            try(URLClassLoader loader = new URLClassLoader(urlsArray, MarketPlaceHelperBundleLoader.class.getClassLoader())){
+                MarketPlaceHelperBundle bundle = loadModule(foundJarFile, loader);
+                if (bundle != null){
+                    bundles.add(bundle);
+                }
+            } catch (IOException e){
+                logger.logErrorMessage("Не удалось закрыть загрузчик классов. Детали: " + e.getMessage());
             }
         }
 
@@ -86,7 +82,7 @@ public class MarketPlaceHelperBundleLoader {
         }
     }
 
-    public MarketPlaceHelperBundle loadModule(File file, ClassLoader loader){
+    public MarketPlaceHelperBundle loadModule(File file, URLClassLoader loader){
         String moduleName = file.getName().replace(".jar", "");
         String mainClassPath;
         try (JarFile jarFile = new JarFile(file)){
@@ -113,7 +109,6 @@ public class MarketPlaceHelperBundleLoader {
             return (MarketPlaceHelperBundle) classToLoad.getDeclaredConstructor().newInstance();
         } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException |
                  ClassNotFoundException e) {
-            // TODO log into file
             logger.logErrorMessage("Произошла ошибка при загрузке модуля " + moduleName + ": " + e.getClass().getName() + ": " + e.getMessage());
             return null;
         }
