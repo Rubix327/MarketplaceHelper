@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import me.rubix327.marketplacehelper.data.BundleResult;
 import me.rubix327.marketplacehelper.data.BundleSource;
+import me.rubix327.marketplacehelper.data.Version;
 
 import java.util.Objects;
 
@@ -16,7 +17,7 @@ public abstract class MarketPlaceHelperBundle {
 
     public abstract String getName();
     public abstract String getDescription();
-    public abstract String getVersion();
+    public abstract Version getVersion();
     public abstract BundleResult execute(BundleSource source);
 
     public MarketPlaceHelperBundle() {
