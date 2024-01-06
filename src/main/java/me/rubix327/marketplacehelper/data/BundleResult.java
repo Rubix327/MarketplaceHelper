@@ -14,5 +14,6 @@ import java.util.List;
 public class BundleResult {
 
     private List<FileOutDto> files;
+    private String saveFolder;
 
 }
