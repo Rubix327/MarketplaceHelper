@@ -12,25 +12,29 @@ import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-import static me.rubix327.marketplacehelper.MarketPlaceHelperLogger.logErrorMessage;
-
 @SuppressWarnings("unused")
 public class MarketPlaceHelperBundleLoader {
 
-    public static List<MarketPlaceHelperBundle> loadBundles(File modulesFolder){
+    private final MarketPlaceHelperLogger logger;
+
+    public MarketPlaceHelperBundleLoader(MarketPlaceHelperLogger logger) {
+        this.logger = logger;
+    }
+
+    public List<MarketPlaceHelperBundle> loadBundles(File modulesFolder){
         if (!modulesFolder.exists()) {
-            logErrorMessage("Папка " + modulesFolder + " не существует.");
+            logger.logErrorMessage("Папка " + modulesFolder + " не существует.");
             return new ArrayList<>();
         }
 
         if (!modulesFolder.isDirectory()) {
-            logErrorMessage("Не найдена папка modules по пути " + modulesFolder + ".");
+            logger.logErrorMessage("Не найдена папка modules по пути " + modulesFolder + ".");
             return new ArrayList<>();
         }
 
         File[] innerFiles = modulesFolder.listFiles();
         if (innerFiles == null) {
-            logErrorMessage("В папке modules не найдено ни одного модуля.");
+            logger.logErrorMessage("В папке modules не найдено ни одного модуля.");
             return new ArrayList<>();
         }
 
@@ -43,7 +47,7 @@ public class MarketPlaceHelperBundleLoader {
         }
 
         if (foundJarFiles.isEmpty()){
-            logErrorMessage("Не найдено ни одного модуля. Модули должны находится в папке modules.");
+            logger.logErrorMessage("Не найдено ни одного модуля. Модули должны находится в папке modules.");
             return new ArrayList<>();
         }
 
@@ -78,7 +82,7 @@ public class MarketPlaceHelperBundleLoader {
         }
     }
 
-    public static MarketPlaceHelperBundle loadModule(File file, ClassLoader loader){
+    public MarketPlaceHelperBundle loadModule(File file, ClassLoader loader){
         String moduleName = file.getName().replace(".jar", "");
         String mainClassPath;
         try (JarFile jarFile = new JarFile(file)){
@@ -91,7 +95,7 @@ public class MarketPlaceHelperBundleLoader {
             mainClassPath = attr.getValue("Main-Class");
         }
         catch (IOException | SecurityException e){
-            logErrorMessage("Не удалось открыть модуль " + moduleName + ". Детали: " + e.getMessage());
+            logger.logErrorMessage("Не удалось открыть модуль " + moduleName + ". Детали: " + e.getMessage());
             return null;
         }
 
@@ -106,7 +110,7 @@ public class MarketPlaceHelperBundleLoader {
         } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException |
                  ClassNotFoundException e) {
             // TODO log into file
-            logErrorMessage("Произошла ошибка при загрузке модуля " + moduleName + ": " + e.getClass().getName() + ": " + e.getMessage());
+            logger.logErrorMessage("Произошла ошибка при загрузке модуля " + moduleName + ": " + e.getClass().getName() + ": " + e.getMessage());
             return null;
         }
     }
