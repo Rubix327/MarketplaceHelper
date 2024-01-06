@@ -1,5 +1,6 @@
 package me.rubix327.marketplacehelper;
 
+import me.rubix327.marketplacehelper.data.BundleResult;
 import me.rubix327.marketplacehelper.data.BundleSource;
 
 import java.util.Objects;
@@ -10,7 +11,7 @@ public abstract class MarketPlaceHelperBundle {
     public abstract String getName();
     public abstract String getDescription();
     public abstract String getVersion();
-    public abstract void init(BundleSource source);
+    public abstract BundleResult init(BundleSource source);
 
     @Override
     public boolean equals(Object o) {
