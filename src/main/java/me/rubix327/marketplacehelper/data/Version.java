@@ -2,6 +2,8 @@ package me.rubix327.marketplacehelper.data;
 
 import lombok.Getter;
 
+import java.util.Objects;
+
 @Getter
 @SuppressWarnings("unused")
 public class Version implements Comparable<Version> {
@@ -48,4 +50,16 @@ public class Version implements Comparable<Version> {
         return compareTo(o) == 0;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Version version = (Version) o;
+        return major == version.major && minor == version.minor && sub == version.sub;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(major, minor, sub);
+    }
 }
