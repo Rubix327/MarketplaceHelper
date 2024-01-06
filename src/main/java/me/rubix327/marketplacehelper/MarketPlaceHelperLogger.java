@@ -1,7 +1,7 @@
 package me.rubix327.marketplacehelper;
 
 import lombok.Setter;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

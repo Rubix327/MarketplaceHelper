@@ -17,6 +17,10 @@ public class MarketPlaceHelperBundleLoader {
 
     private final MarketPlaceHelperLogger logger;
 
+    public MarketPlaceHelperBundleLoader() {
+        this.logger = new MarketPlaceHelperLogger();
+    }
+
     public MarketPlaceHelperBundleLoader(MarketPlaceHelperLogger logger) {
         this.logger = logger;
     }
