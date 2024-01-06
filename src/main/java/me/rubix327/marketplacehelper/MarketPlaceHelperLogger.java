@@ -1,5 +1,7 @@
 package me.rubix327.marketplacehelper;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.slf4j.Logger;
 
@@ -7,11 +9,17 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@Getter
+@NoArgsConstructor
 @SuppressWarnings("unused")
 public class MarketPlaceHelperLogger {
 
     @Setter
     private Logger logger;
+
+    public MarketPlaceHelperLogger(Logger logger) {
+        this.logger = logger;
+    }
 
     public void logEmptyMessage(){
         logMessage("");
