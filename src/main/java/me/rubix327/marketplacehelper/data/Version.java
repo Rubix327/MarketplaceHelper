@@ -62,4 +62,9 @@ public class Version implements Comparable<Version> {
     public int hashCode() {
         return Objects.hash(major, minor, sub);
     }
+
+    @Override
+    public String toString() {
+        return major + "." + minor + "." + sub;
+    }
 }
