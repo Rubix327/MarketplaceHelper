@@ -12,7 +12,7 @@ import java.util.Objects;
 public abstract class MarketPlaceHelperBundle {
 
     @NonNull
-    private MarketPlaceHelperLogger logger;
+    protected MarketPlaceHelperLogger logger;
 
     public abstract String getName();
     public abstract String getDescription();
