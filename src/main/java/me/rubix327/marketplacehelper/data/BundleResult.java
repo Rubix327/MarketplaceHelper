@@ -5,16 +5,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.io.InputStream;
+import java.util.List;
 
 @Getter
 @Setter
 @ToString
 @AllArgsConstructor
-public class FileInputStreamDto {
+public class BundleResult {
 
-    private final InputStream inputStream;
-    private final String originalName;
-    private final String description;
+    private List<FileOutDto> files;
 
 }
